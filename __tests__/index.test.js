@@ -7,9 +7,16 @@ beforeAll(() => {
   expected = readFileSync('__fixtures__/result', 'utf8');
 });
 
-test('Correct diff', () => {
+test('Correct diff json-format', () => {
   const path1 = '__fixtures__/file1.json';
   const path2 = '__fixtures__/file2.json';
+
+  expect(gendiff(path1, path2)).toBe(expected);
+});
+
+test('Correct diff yml-format', () => {
+  const path1 = '__fixtures__/file1.yml';
+  const path2 = '__fixtures__/file2.yml';
 
   expect(gendiff(path1, path2)).toBe(expected);
 });

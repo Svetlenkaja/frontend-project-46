@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { readFileSync } from 'node:fs';
 import { extname, resolve } from 'node:path';
 import { cwd } from 'node:process';
-import fileParse from './parse.js';
+import fileParse from './parsers.js';
 
 const PLUS = '+';
 const MINUS = '-';
