@@ -1,9 +1,9 @@
 const fileParse = (file, format) => {
-  switch(format) {
-    case '.json': 
+  switch (format) {
+    case '.json':
       return JSON.parse(file);
     default:
-      throw new Error("unknown file format"); 
+      throw new Error('unknown file format');
   }
 };
 

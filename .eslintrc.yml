@@ -2,7 +2,8 @@ plugins:
   - jest
 
 env:
-  node: true
+  node: true,
+  jest: true
 
 extends:
   - 'airbnb-base'
