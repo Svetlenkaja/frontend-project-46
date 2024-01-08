@@ -5,6 +5,7 @@ const fileParse = (file, format) => {
     case '.json':
       return JSON.parse(file);
     case '.yml':
+    case '.yaml':
       return yaml.load(file);
     default:
       throw new Error('unknown file format');
