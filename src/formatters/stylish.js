@@ -10,7 +10,7 @@ const getSign = (type) => {
   if (type === 'added') {
     return PLUS;
   }
-  if (type === 'deleted') {
+  if (type === 'removed') {
     return MINUS;
   }
   return SPACE;
@@ -32,7 +32,7 @@ const stylish = (array) => {
     });
     return arrayWithFormat.join('\n');
   };
-  const result = formatter(array, 1, 'changed');
+  const result = formatter(array, 1, 'unchanged');
   console.log(result);
   return `{\n${result}\n}`;
 };

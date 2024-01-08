@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 import { extname, resolve } from 'node:path';
 import { cwd } from 'node:process';
 import fileParse from './parsers.js';
-import stylish from './formatter.js';
+import formatter from './formatters/index.js';
 
 const getFile = (path) => {
   const workDir = cwd();
@@ -13,7 +13,7 @@ const getFile = (path) => {
   return readFileSync(absolutePatn, 'utf8');
 };
 
-export default (filepath1, filepath2, formatter = stylish) => {
+export default (filepath1, filepath2, type = 'stylish') => {
   const file1 = getFile(filepath1);
   const file2 = getFile(filepath2);
 
@@ -40,7 +40,7 @@ export default (filepath1, filepath2, formatter = stylish) => {
             acc.push({ key, type: 'unchanged', value: value1 });
           } else {
             if (value1 !== undefined) {
-              acc.push({ key, type: 'deleted', value: value1 });
+              acc.push({ key, type: 'removed', value: value1 });
             }
             if (value2 !== undefined) {
               acc.push({ key, type: 'added', value: value2 });
@@ -51,7 +51,7 @@ export default (filepath1, filepath2, formatter = stylish) => {
 
         if (typeof value1 === 'object') {
           const children1 = iter(Object.keys(value1), value1, value2);
-          acc.push({ key, type: 'deleted', value: children1 });
+          acc.push({ key, type: 'removed', value: children1 });
           if (value2 !== undefined) {
             acc.push({ key, type: 'added', value: value2 });
           }
@@ -59,7 +59,7 @@ export default (filepath1, filepath2, formatter = stylish) => {
           const children2 = iter(Object.keys(value2), value1, value2);
           acc.push({ key, type: 'added', value: children2 });
           if (value1 !== undefined) {
-            acc.push({ key, type: 'deleted', value: value1 });
+            acc.push({ key, type: 'removed', value: value1 });
           }
         }
         return acc;
@@ -67,5 +67,5 @@ export default (filepath1, filepath2, formatter = stylish) => {
     return res;
   };
   const result = iter(allKeys, obj1, obj2);
-  return formatter(result);
+  return formatter(result, type.format);
 };
