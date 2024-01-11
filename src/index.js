@@ -13,59 +13,45 @@ const getFile = (path) => {
   return readFileSync(absolutePatn, 'utf8');
 };
 
-export default (filepath1, filepath2, type = 'stylish') => {
+const compare = (obj1, obj2) => {
+  const keys = _.sortBy(_.union(Object.keys(obj1), Object.keys(obj2)));
+  const result = keys
+    .reduce((acc, key) => {
+      const value1 = obj1[key];
+      const value2 = obj2[key];
+      if (_.isEqual(value1, value2)) {
+        acc.push({ key, type: 'unchanged', value: value1 });
+        return acc;
+      }
+      if (!_.has(obj1, key) && _.has(obj2, key)) {
+        acc.push({ key, type: 'added', value: value2 });
+        return acc;
+      }
+      if (_.has(obj1, key) && !_.has(obj2, key)) {
+        acc.push({ key, type: 'deleted', value: value1 });
+        return acc;
+      }
+      if (_.isObject(value1) && _.isObject(value2)) {
+        const children = compare(value1, value2);
+        acc.push({ key, type: 'nested', value: children });
+        return acc;
+      }
+      acc.push({
+        key, type: 'changed', valueOld: value1, valueNew: value2,
+      });
+      return acc;
+    }, []);
+  return result.flat();
+};
+
+export default (filepath1, filepath2, type = { format: 'stylish' }) => {
   const file1 = getFile(filepath1);
   const file2 = getFile(filepath2);
 
   const obj1 = fileParse(file1, extname(filepath1));
   const obj2 = fileParse(file2, extname(filepath2));
 
-  const mergeObj = _.merge({}, obj1, obj2);
-  const allKeys = _.sortBy(Object.keys(mergeObj));
-  const iter = (keys, node1, node2) => {
-    const res = keys
-      .reduce((acc, key) => {
-        const value1 = _.has(node1, key) ? node1[key] : undefined;
-        const value2 = _.has(node2, key) ? node2[key] : undefined;
+  const result = compare(obj1, obj2);
 
-        if (typeof value1 === 'object' && typeof value2 === 'object') {
-          const mergeNode = _.merge({}, value1, value2);
-          const sortKeys = _.sortBy(Object.keys(mergeNode));
-          const children = iter(sortKeys, value1, value2);
-          acc.push({ key, type: 'unchanged', value: children });
-          return acc;
-        }
-        if ((typeof value1 !== 'object' || value1 === null) && (typeof value2 !== 'object' || value2 === null)) {
-          if (value1 === value2) {
-            acc.push({ key, type: 'unchanged', value: value1 });
-          } else {
-            if (value1 !== undefined) {
-              acc.push({ key, type: 'removed', value: value1 });
-            }
-            if (value2 !== undefined) {
-              acc.push({ key, type: 'added', value: value2 });
-            }
-          }
-          return acc;
-        }
-
-        if (typeof value1 === 'object') {
-          const children1 = iter(Object.keys(value1), value1, value2);
-          acc.push({ key, type: 'removed', value: children1 });
-          if (value2 !== undefined) {
-            acc.push({ key, type: 'added', value: value2 });
-          }
-        } else {
-          const children2 = iter(Object.keys(value2), value1, value2);
-          acc.push({ key, type: 'added', value: children2 });
-          if (value1 !== undefined) {
-            acc.push({ key, type: 'removed', value: value1 });
-          }
-        }
-        return acc;
-      }, []);
-    return res;
-  };
-  const result = iter(allKeys, obj1, obj2);
   return formatter(result, type.format);
 };

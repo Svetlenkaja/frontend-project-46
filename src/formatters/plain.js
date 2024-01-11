@@ -1,18 +1,37 @@
+import _ from 'lodash';
+
+const getStringValue = (str) => (_.isString(str) ? `'${str}'` : str);
+
+const getValue = (value) => (_.isObject(value) ? '[complex value]' : getStringValue(value));
+
 const plain = (array) => {
-  const formatter = (arr, depth, parentKey) => {
-    const arrayWithFormat = arr.map((node) => {
-      const { type, value } = node;
-      if (Array.isArray(value)) {
-        const children = formatter(value, depth + 1, node.key);
+  const formatter = (arr, parentKey) => {
+    const result = arr.flatMap((node) => {
+      const { type } = node;
+      const key = parentKey === undefined ? node.key : `${parentKey}.${node.key}`;
+
+      if (type === 'nested') {
+        const children = formatter(node.value, key);
         return children;
       }
-      return `Property '${parentKey}.${node.key}' was ${type} with value: ${value}`;
+
+      if (type === 'changed') {
+        return `Property '${key}' was updated. From ${getValue(node.valueOld)} to ${getValue(node.valueNew)}`;
+      }
+
+      if (type === 'added') {
+        return `Property '${key}' was added with value: ${getValue(node.value)}`;
+      }
+
+      if (type === 'deleted') {
+        return `Property '${key}' was removed`;
+      }
+
+      return [];
     });
-    return arrayWithFormat.join('\n');
+    return result.join('\n');
   };
-  const result = formatter(array, 1, 'changed');
-  // console.log(result);
-  return `${result}`;
+  return `${formatter(array)}`;
 };
 
 export default plain;
