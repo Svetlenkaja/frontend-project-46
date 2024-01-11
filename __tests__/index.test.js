@@ -13,7 +13,7 @@ const readFile = (filename) => readFileSync(getFixturePath(filename), 'utf-8');
 test('Correct diff json-format with default type', () => {
   const path1 = getFixturePath('file1.json');
   const path2 = getFixturePath('file2.json');
-  const expected = readFile('result');
+  const expected = readFile('stylish');
 
   expect(gendiff(path1, path2)).toBe(expected);
 });
@@ -21,7 +21,7 @@ test('Correct diff json-format with default type', () => {
 test('Correct diff json-format with type = stylish', () => {
   const path1 = getFixturePath('file1.json');
   const path2 = getFixturePath('file2.json');
-  const expected = readFile('result');
+  const expected = readFile('stylish');
 
   expect(gendiff(path1, path2, { format: 'stylish' })).toBe(expected);
 });
@@ -29,17 +29,33 @@ test('Correct diff json-format with type = stylish', () => {
 test('Correct diff yml-format with default type', () => {
   const path1 = getFixturePath('file1.yml');
   const path2 = getFixturePath('file2.yaml');
-  const expected = readFile('result');
+  const expected = readFile('stylish');
 
   expect(gendiff(path1, path2)).toBe(expected);
+});
+
+test('Correct diff different formats with type = stylish', () => {
+  const path1 = getFixturePath('file1.json');
+  const path2 = getFixturePath('file2.yaml');
+  const expected = readFile('stylish');
+
+  expect(gendiff(path1, path2, { format: 'stylish' })).toBe(expected);
 });
 
 test('Correct diff json-format with type = plain', () => {
   const path1 = getFixturePath('file1.json');
   const path2 = getFixturePath('file2.json');
-  const expected = readFile('result_plain');
+  const expected = readFile('plain');
 
   expect(gendiff(path1, path2, { format: 'plain' })).toBe(expected);
+});
+
+test('Correct diff json-format with type = json', () => {
+  const path1 = getFixturePath('file1.json');
+  const path2 = getFixturePath('file2.json');
+  const expected = readFile('json');
+
+  expect(gendiff(path1, path2, { format: 'json' })).toBe(expected);
 });
 
 test('Incorrect file path', () => {

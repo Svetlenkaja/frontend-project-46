@@ -22,7 +22,7 @@ const getSpaces = (depth, isShift = false) => {
 };
 
 const stringify = (obj, level) => {
-  const spaces = getSpaces(level, false);
+  const spaces = getSpaces(level);
   const keys = Object.keys(obj);
   const result = keys.map((key) => {
     if (_.isObject(obj[key])) {
