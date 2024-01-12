@@ -60,31 +60,30 @@ Usage: gendiff [options] <filepath1> <filepath2>
 gendiff file1.json file2.json
 ```
 
-https://asciinema.org/a/ddhDEpvprqQnhKbWHWzsoCLhb
-
+<a href ="https://asciinema.org/a/ddhDEpvprqQnhKbWHWzsoCLhb" target="_blank"><img src="https://asciinema.org/a/ddhDEpvprqQnhKbWHWzsoCLhb.svg"/></a>
 ```
 gendiff file1.yml file2.yml
 ```
-
-https://asciinema.org/a/NMoKve3ZFxzvzwVvCxFacGIok
+<a href ="https://asciinema.org/a/NMoKve3ZFxzvzwVvCxFacGIok" target="_blank"><img src="https://asciinema.org/a/NMoKve3ZFxzvzwVvCxFacGIok.svg"/></a>
 
 ```
 gendiff './__fixtures__/file1.json' './__fixtures__/file2.json'
 ```
+<a href ="https://asciinema.org/a/Z9TOZcncW0Thj4NkZx5MSaQS4" target="_blank"><img src="https://asciinema.org/a/Z9TOZcncW0Thj4NkZx5MSaQS4.svg"/></a>
 
-https://asciinema.org/a/Z9TOZcncW0Thj4NkZx5MSaQS4
 
 ```
 gendiff -f plain './__fixtures__/file1.json' './__fixtures__/file2.json'
 ```
 
-https://asciinema.org/a/BKAM1vXJ5aEdYC80NDHFN8lFs
+<a href ="https://asciinema.org/a/BKAM1vXJ5aEdYC80NDHFN8lFs" target="_blank"><img src="https://asciinema.org/a/BKAM1vXJ5aEdYC80NDHFN8lFs.svg"/></a>
 
 ```
 gendiff --format json './__fixtures__/file1.json' './__fixtures__/file2.json'
 ```
 
-https://asciinema.org/a/PDDgrgOBFC8JFmbSb9ahNVCLd
+<a href ="https://asciinema.org/a/PDDgrgOBFC8JFmbSb9ahNVCLd" target="_blank"><img src="https://asciinema.org/a/PDDgrgOBFC8JFmbSb9ahNVCLd.svg"/></a>
+
 
 ### License
 
