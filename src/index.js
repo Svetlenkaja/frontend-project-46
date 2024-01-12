@@ -16,31 +16,26 @@ const getFile = (path) => {
 const compare = (obj1, obj2) => {
   const keys = _.sortBy(_.union(Object.keys(obj1), Object.keys(obj2)));
   const result = keys
-    .reduce((acc, key) => {
+    .map((key) => {
       const value1 = obj1[key];
       const value2 = obj2[key];
       if (_.isEqual(value1, value2)) {
-        acc.push({ key, type: 'unchanged', value: value1 });
-        return acc;
+        return { key, type: 'unchanged', value: value1 };
       }
       if (!_.has(obj1, key) && _.has(obj2, key)) {
-        acc.push({ key, type: 'added', value: value2 });
-        return acc;
+        return { key, type: 'added', value: value2 };
       }
       if (_.has(obj1, key) && !_.has(obj2, key)) {
-        acc.push({ key, type: 'deleted', value: value1 });
-        return acc;
+        return { key, type: 'deleted', value: value1 };
       }
       if (_.isObject(value1) && _.isObject(value2)) {
         const children = compare(value1, value2);
-        acc.push({ key, type: 'nested', value: children });
-        return acc;
+        return { key, type: 'nested', value: children };
       }
-      acc.push({
+      return {
         key, type: 'changed', valueOld: value1, valueNew: value2,
-      });
-      return acc;
-    }, []);
+      };
+    });
   return result.flat();
 };
 
