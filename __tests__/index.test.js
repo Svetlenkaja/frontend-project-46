@@ -23,7 +23,7 @@ test('Correct diff json-format with type = stylish', () => {
   const path2 = getFixturePath('file2.json');
   const expected = readFile('stylish');
 
-  expect(gendiff(path1, path2, { format: 'stylish' })).toBe(expected);
+  expect(gendiff(path1, path2, 'stylish')).toBe(expected);
 });
 
 test('Correct diff yml-format with default type', () => {
@@ -39,7 +39,7 @@ test('Correct diff different formats with type = stylish', () => {
   const path2 = getFixturePath('file2.yaml');
   const expected = readFile('stylish');
 
-  expect(gendiff(path1, path2, { format: 'stylish' })).toBe(expected);
+  expect(gendiff(path1, path2, 'stylish')).toBe(expected);
 });
 
 test('Correct diff json-format with type = plain', () => {
@@ -47,7 +47,7 @@ test('Correct diff json-format with type = plain', () => {
   const path2 = getFixturePath('file2.json');
   const expected = readFile('plain');
 
-  expect(gendiff(path1, path2, { format: 'plain' })).toBe(expected);
+  expect(gendiff(path1, path2, 'plain')).toBe(expected);
 });
 
 test('Correct diff json-format with type = json', () => {
@@ -55,7 +55,7 @@ test('Correct diff json-format with type = json', () => {
   const path2 = getFixturePath('file2.json');
   const expected = readFile('json');
 
-  expect(gendiff(path1, path2, { format: 'json' })).toBe(expected);
+  expect(gendiff(path1, path2, 'json')).toBe(expected);
 });
 
 test('Incorrect file path', () => {

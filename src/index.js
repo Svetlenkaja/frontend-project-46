@@ -44,7 +44,7 @@ const compare = (obj1, obj2) => {
   return result.flat();
 };
 
-export default (filepath1, filepath2, type = { format: 'stylish' }) => {
+export default (filepath1, filepath2, format = 'stylish') => {
   const file1 = getFile(filepath1);
   const file2 = getFile(filepath2);
 
@@ -52,6 +52,5 @@ export default (filepath1, filepath2, type = { format: 'stylish' }) => {
   const obj2 = fileParse(file2, extname(filepath2));
 
   const result = compare(obj1, obj2);
-
-  return formatter(result, type.format);
+  return formatter(result, format);
 };
