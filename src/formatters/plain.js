@@ -10,24 +10,20 @@ const plain = (array) => {
       const { type } = node;
       const key = parentKey === undefined ? node.key : `${parentKey}.${node.key}`;
 
-      if (type === 'nested') {
-        const children = formatter(node.value, key);
-        return children;
+      switch (type) {
+        case 'nested': {
+          const children = formatter(node.value, key);
+          return children;
+        }
+        case 'changed':
+          return `Property '${key}' was updated. From ${getValue(node.valueOld)} to ${getValue(node.valueNew)}`;
+        case 'added':
+          return `Property '${key}' was added with value: ${getValue(node.value)}`;
+        case 'deleted':
+          return `Property '${key}' was removed`;
+        default:
+          return [];
       }
-
-      if (type === 'changed') {
-        return `Property '${key}' was updated. From ${getValue(node.valueOld)} to ${getValue(node.valueNew)}`;
-      }
-
-      if (type === 'added') {
-        return `Property '${key}' was added with value: ${getValue(node.value)}`;
-      }
-
-      if (type === 'deleted') {
-        return `Property '${key}' was removed`;
-      }
-
-      return [];
     });
     return result.join('\n');
   };

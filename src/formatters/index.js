@@ -11,7 +11,7 @@ const formatter = (array, format) => {
     case 'json':
       return json(array);
     default:
-      throw new Error('unknown type of format');
+      throw new Error(`${format} unknown type of format`);
   }
 };
 

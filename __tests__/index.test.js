@@ -10,64 +10,48 @@ const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', 
 
 const readFile = (filename) => readFileSync(getFixturePath(filename), 'utf-8');
 
-test('Correct diff json-format with default type', () => {
-  const path1 = getFixturePath('file1.json');
-  const path2 = getFixturePath('file2.json');
-  const expected = readFile('stylish');
+const data = [
+  {
+    path1: getFixturePath('file1.json'), path2: getFixturePath('file2.json'), expected: readFile('stylish'),
+  },
+  {
+    path1: getFixturePath('file1.json'), path2: getFixturePath('file2.json'), format: 'stylish', expected: readFile('stylish'),
+  },
+  {
+    path1: getFixturePath('file1.yml'), path2: getFixturePath('file2.yaml'), format: 'stylish', expected: readFile('stylish'),
+  },
+  {
+    path1: getFixturePath('file1.json'), path2: getFixturePath('file2.yaml'), format: 'stylish', expected: readFile('stylish'),
+  },
+  {
+    path1: getFixturePath('file1.json'), path2: getFixturePath('file2.json'), format: 'plain', expected: readFile('plain'),
+  },
+  {
+    path1: getFixturePath('file1.json'), path2: getFixturePath('file2.json'), format: 'json', expected: readFile('json'),
+  },
+];
 
-  expect(gendiff(path1, path2)).toBe(expected);
+test.each(data)('.gendiff($path1, $path2, $format)', (
+  {
+    path1, path2, format, expected,
+  },
+) => {
+  expect(gendiff(path1, path2, format)).toBe(expected);
 });
 
-test('Correct diff json-format with type = stylish', () => {
-  const path1 = getFixturePath('file1.json');
-  const path2 = getFixturePath('file2.json');
-  const expected = readFile('stylish');
+const dataError = [
+  {
+    path1: 'file1.json', path2: 'file2.json',
+  },
+  {
+    path1: getFixturePath('file1.json'), path2: getFixturePath('file2.json'), format: 'docx',
+  },
+];
 
-  expect(gendiff(path1, path2, 'stylish')).toBe(expected);
-});
-
-test('Correct diff yml-format with default type', () => {
-  const path1 = getFixturePath('file1.yml');
-  const path2 = getFixturePath('file2.yaml');
-  const expected = readFile('stylish');
-
-  expect(gendiff(path1, path2)).toBe(expected);
-});
-
-test('Correct diff different formats with type = stylish', () => {
-  const path1 = getFixturePath('file1.json');
-  const path2 = getFixturePath('file2.yaml');
-  const expected = readFile('stylish');
-
-  expect(gendiff(path1, path2, 'stylish')).toBe(expected);
-});
-
-test('Correct diff json-format with type = plain', () => {
-  const path1 = getFixturePath('file1.json');
-  const path2 = getFixturePath('file2.json');
-  const expected = readFile('plain');
-
-  expect(gendiff(path1, path2, 'plain')).toBe(expected);
-});
-
-test('Correct diff json-format with type = json', () => {
-  const path1 = getFixturePath('file1.json');
-  const path2 = getFixturePath('file2.json');
-  const expected = readFile('json');
-
-  expect(gendiff(path1, path2, 'json')).toBe(expected);
-});
-
-test('Incorrect file path', () => {
-  const path1 = 'file1.json';
-  const path2 = 'file2.json';
-
-  expect(() => gendiff(path1, path2)).toThrow();
-});
-
-test('Incorrect type of format', () => {
-  const path1 = getFixturePath('file1.json');
-  const path2 = getFixturePath('file2.json');
-
-  expect(() => gendiff(path1, path2, 'docx')).toThrow();
+test.each(dataError)('.gendiff($path1, $path2, $format)', (
+  {
+    path1, path2, format,
+  },
+) => {
+  expect(() => gendiff(path1, path2, format)).toThrow();
 });
