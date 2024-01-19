@@ -6,71 +6,59 @@ const SPACE = ' ';
 const SHIFT = 2;
 const SPACE_FOR_LEVEL = 4;
 
-const getSign = (type) => {
-  if (type === 'added') {
-    return PLUS;
-  }
-  if (type === 'deleted') {
-    return MINUS;
-  }
-  return SPACE;
-};
-
 const getSpaces = (depth, isShift = false) => {
   const countShift = isShift ? SHIFT : 0;
   return SPACE.repeat(SPACE_FOR_LEVEL * depth - countShift);
 };
 
-const stringify = (obj, level) => {
-  const spaces = getSpaces(level);
-  const keys = Object.keys(obj);
-  const result = keys.map((key) => {
-    if (_.isObject(obj[key])) {
-      const children = stringify(obj[key], level + 1);
-      return `${spaces}${key}: {\n${children}\n${spaces}}`;
-    }
-    return `${spaces}${key}: ${obj[key]}`;
-  });
-  return result.join('\n');
+const getStringValue = (value, depth) => {
+  if (!_.isObject(value)) return value;
+  const iter = (obj, level) => {
+    const keys = Object.keys(obj);
+    const result = keys.map((key) => {
+      if (_.isObject(obj[key])) {
+        const children = getStringValue(obj[key], level + 1);
+        return `${getSpaces(level + 1)}${key}: ${children}`;
+      }
+      return `${getSpaces(level + 1)}${key}: ${obj[key]}`;
+    });
+    return result.join('\n');
+  };
+  return `{\n${iter(value, depth)}\n${getSpaces(depth)}}`;
 };
 
-const getStringValue = (value, level) => {
-  if (_.isObject(value)) {
-    return `{\n${stringify(value, level + 1)}\n${getSpaces(level)}}`;
-  }
-  return value;
-};
-
-const stylish = (array) => {
-  const formatter = (arr, depth) => {
+const convertToStylish = (array) => {
+  const iter = (arr, depth) => {
     const result = arr.map((node) => {
       const spaces = getSpaces(depth);
       const shiftSpaces = getSpaces(depth, true);
 
-      const { type } = node;
+      const { key, type } = node;
 
       if (type === 'changed') {
-        const valueOld = getStringValue(node.valueOld, depth);
-        const valueNew = getStringValue(node.valueNew, depth);
-        return `${shiftSpaces}${MINUS} ${node.key}: ${valueOld}\n${shiftSpaces}${PLUS} ${node.key}: ${valueNew}`;
+        const strOld = getStringValue(node.valueOld, depth);
+        const strNew = getStringValue(node.valueNew, depth);
+        const strDeleted = `${shiftSpaces}${MINUS} ${node.key}: ${strOld}`;
+        const strAdded = `${shiftSpaces}${PLUS} ${node.key}: ${strNew}`;
+        return `${strDeleted}\n${strAdded}`;
       }
-
-      const key = `${shiftSpaces}${getSign(type)} ${node.key}`;
 
       if (type === 'nested') {
-        const children = formatter(node.value, depth + 1);
-        return `${key}: {\n${children}\n${spaces}}`;
+        const children = iter(node.children, depth + 1);
+        return `${shiftSpaces}${SPACE} ${key}: {\n${children}\n${spaces}}`;
       }
 
-      if (_.isObject(node.value)) {
-        const children = stringify(node.value, depth + 1);
-        return `${key}: {\n${children}\n${spaces}}`;
+      const value = getStringValue(node.value, depth);
+      if (type === 'unchanged') {
+        return `${shiftSpaces}${SPACE} ${key}: ${value}`;
       }
-      return `${key}: ${node.value}`;
+
+      const sign = type === 'added' ? PLUS : MINUS;
+      return `${shiftSpaces}${sign} ${key}: ${value}`;
     });
     return result.join('\n');
   };
-  return `{\n${formatter(array, 1)}\n}`;
+  return `{\n${iter(array, 1)}\n}`;
 };
 
-export default stylish;
+export default convertToStylish;

@@ -4,16 +4,16 @@ const getStringValue = (str) => (_.isString(str) ? `'${str}'` : str);
 
 const getValue = (value) => (_.isObject(value) ? '[complex value]' : getStringValue(value));
 
-const plain = (array) => {
-  const formatter = (arr, parentKey) => {
+const convertToPlain = (array) => {
+  const iter = (arr, parentKey) => {
     const result = arr.flatMap((node) => {
       const { type } = node;
       const key = parentKey === undefined ? node.key : `${parentKey}.${node.key}`;
 
       switch (type) {
         case 'nested': {
-          const children = formatter(node.value, key);
-          return children;
+          // const children =
+          return iter(node.children, key);
         }
         case 'changed':
           return `Property '${key}' was updated. From ${getValue(node.valueOld)} to ${getValue(node.valueNew)}`;
@@ -27,7 +27,7 @@ const plain = (array) => {
     });
     return result.join('\n');
   };
-  return `${formatter(array)}`;
+  return `${iter(array)}`;
 };
 
-export default plain;
+export default convertToPlain;

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const compare = (obj1, obj2) => {
+const getDiffTree = (obj1, obj2) => {
   const keys = _.sortBy(_.union(Object.keys(obj1), Object.keys(obj2)));
   const result = keys
     .map((key) => {
@@ -16,8 +16,8 @@ const compare = (obj1, obj2) => {
         return { key, type: 'deleted', value: value1 };
       }
       if (_.isObject(value1) && _.isObject(value2)) {
-        const children = compare(value1, value2);
-        return { key, type: 'nested', value: children };
+        const children = getDiffTree(value1, value2);
+        return { key, type: 'nested', children };
       }
       return {
         key, type: 'changed', valueOld: value1, valueNew: value2,
@@ -26,4 +26,4 @@ const compare = (obj1, obj2) => {
   return result.flat();
 };
 
-export default compare;
+export default getDiffTree;

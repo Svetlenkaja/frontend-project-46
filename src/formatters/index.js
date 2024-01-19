@@ -1,18 +1,18 @@
-import stylish from './stylish.js';
-import plain from './plain.js';
-import json from './json.js';
+import convertToStylish from './stylish.js';
+import convertToPlain from './plain.js';
+import convertToJson from './json.js';
 
-const formatter = (array, format) => {
+const convertToFormat = (array, format) => {
   switch (format) {
     case 'stylish':
-      return stylish(array);
+      return convertToStylish(array);
     case 'plain':
-      return plain(array);
+      return convertToPlain(array);
     case 'json':
-      return json(array);
+      return convertToJson(array);
     default:
       throw new Error(`${format} unknown type of format`);
   }
 };
 
-export default formatter;
+export default convertToFormat;
